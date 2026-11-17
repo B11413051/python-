@@ -1,0 +1,1110 @@
+<!doctype html>
+<html lang="zh-Hant" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Python 類別與物件互動教室 — Class &amp; Object</title>
+    <meta
+      name="description"
+      content="使用設計藍圖與實體房子比喻的 Python Class &amp; Object 單頁互動教學網頁，包含程式碼範例、AI 助教提問與隨堂小測驗。"
+    />
+    <meta property="og:title" content="Python 類別與物件互動教室 — Class &amp; Object" />
+    <meta
+      property="og:description"
+      content="使用設計藍圖與實體房子比喻的 Python Class &amp; Object 單頁互動教學網頁，包含程式碼範例、AI 助教提問與隨堂小測驗。"
+    />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Google Fonts: Plus Jakarta Sans + Noto Sans TC + JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Plus Jakarta Sans"', '"Noto Sans TC"', 'system-ui', 'sans-serif'],
+              mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      body {
+        font-family: 'Plus Jakarta Sans', 'Noto Sans TC', system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .blueprint-grid {
+        background-color: #f0f7ff;
+        background-image:
+          linear-gradient(to right, rgba(2, 132, 199, 0.08) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(2, 132, 199, 0.08) 1px, transparent 1px);
+        background-size: 24px 24px;
+      }
+
+      .code-line {
+        transition: background-color 180ms cubic-bezier(0.16, 1, 0.3, 1), opacity 180ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .code-line-dim {
+        opacity: 0.38;
+      }
+
+      .code-line-active {
+        background-color: rgba(56, 189, 248, 0.14);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+        *,
+        *::before,
+        *::after {
+          transition-duration: 0.01ms !important;
+          animation-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-slate-50 text-slate-900 selection:bg-sky-100 selection:text-sky-900">
+    <!-- Top Bar (3-zone contract) -->
+    <header class="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur-sm">
+      <div class="mx-auto flex max-w-6xl items-center justify-between gap-8 px-4 py-3.5 sm:px-6">
+        <a
+          href="#top"
+          class="shrink-0 whitespace-nowrap text-base font-bold tracking-tight text-slate-900 sm:text-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 focus-visible:ring-offset-2 rounded"
+        >
+          Python OOP 教室
+        </a>
+
+        <nav
+          aria-label="頁面導覽"
+          class="hidden items-center gap-6 text-sm font-medium text-slate-600 md:flex"
+        >
+          <a
+            href="#concept"
+            class="shrink-0 whitespace-nowrap transition-colors duration-150 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 rounded px-1 py-1"
+          >
+            觀念圖解
+          </a>
+          <a
+            href="#code"
+            class="shrink-0 whitespace-nowrap transition-colors duration-150 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 rounded px-1 py-1"
+          >
+            程式碼範例
+          </a>
+          <a
+            href="#ai-tutor"
+            class="shrink-0 whitespace-nowrap transition-colors duration-150 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 rounded px-1 py-1"
+          >
+            AI 助教
+          </a>
+          <a
+            href="#quiz"
+            class="shrink-0 whitespace-nowrap transition-colors duration-150 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 rounded px-1 py-1"
+          >
+            隨堂測驗
+          </a>
+        </nav>
+
+        <div class="shrink-0">
+          <a
+            href="#quiz"
+            class="inline-flex min-h-[40px] items-center justify-center whitespace-nowrap rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white transition-colors duration-150 hover:bg-sky-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 focus-visible:ring-offset-2"
+          >
+            隨堂挑戰
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main id="top" class="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
+      <!-- Intro Hero -->
+      <section class="pb-10 sm:pb-12 border-b border-slate-200">
+        <div class="max-w-3xl">
+          <p class="text-xs font-medium tracking-wide text-slate-500">
+            Python 物件導向基礎 · 核心單元 · 約 5 分鐘互動學習
+          </p>
+          <h1
+            class="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl"
+            style="text-wrap: balance"
+          >
+            Python 類別與物件：從設計藍圖到實體房子
+          </h1>
+          <p class="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg max-w-2xl">
+            寫程式時，我們常常需要描述「同一類事物」的共同結構，並依此建立許多各自獨立的個體。透過建築藍圖與房子的對照，快速掌握
+            <code class="font-mono text-sm font-semibold text-sky-700 bg-sky-50 px-1.5 py-0.5 rounded">class</code>、
+            <code class="font-mono text-sm font-semibold text-sky-700 bg-sky-50 px-1.5 py-0.5 rounded">__init__</code>
+            與
+            <code class="font-mono text-sm font-semibold text-sky-700 bg-sky-50 px-1.5 py-0.5 rounded">self</code>。
+          </p>
+        </div>
+      </section>
+
+      <!-- Section 1: 觀念圖解 -->
+      <section id="concept" class="py-12 sm:py-16 border-b border-slate-200 scroll-mt-20">
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p class="text-xs font-semibold text-sky-700">01. 觀念圖解</p>
+            <h2 class="mt-1 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+              設計藍圖 vs. 實體房子
+            </h2>
+          </div>
+          <p class="text-sm text-slate-500">
+            先選好規格再點擊「依藍圖蓋房子」，觀察多個物件如何各自保有獨立屬性。
+          </p>
+        </div>
+
+        <div class="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-stretch">
+          <!-- Left: Blueprint (Class) -->
+          <div class="lg:col-span-5 flex flex-col justify-between rounded-xl border border-sky-200 bg-white p-6">
+            <div>
+              <div class="flex items-center justify-between gap-4">
+                <div>
+                  <span class="text-xs font-semibold text-sky-700">Class 類別</span>
+                  <h3 class="mt-0.5 text-lg font-bold text-slate-900">建築設計藍圖 (House)</h3>
+                </div>
+                <span class="font-mono text-xs font-medium text-slate-500">1 份定義</span>
+              </div>
+
+              <p class="mt-3 text-sm leading-relaxed text-slate-600">
+                藍圖本身還不能住人，它只規定好每一棟房子都必須擁有「牆壁顏色」與「樓層數」，以及可以執行的動作（例如開門或改漆顏色）。
+              </p>
+
+              <!-- Architectural Blueprint Graphic -->
+              <div class="blueprint-grid mt-5 rounded-lg border border-sky-200/80 p-5">
+                <div class="flex items-center justify-between text-xs font-mono text-sky-800 mb-3">
+                  <span>class House:</span>
+                  <span>BLUEPRINT SPEC</span>
+                </div>
+                <svg
+                  viewBox="0 0 300 170"
+                  class="w-full h-auto"
+                  role="img"
+                  aria-label="房屋建築設計藍圖線框圖"
+                >
+                  <!-- Dimension lines -->
+                  <line x1="40" y1="150" x2="260" y2="150" stroke="#0284C7" stroke-width="1" stroke-dasharray="4 3" />
+                  <line x1="65" y1="25" x2="65" y2="140" stroke="#0284C7" stroke-width="1" stroke-dasharray="4 3" />
+                  <!-- Roof wireframe -->
+                  <polygon
+                    points="150,24 85,72 215,72"
+                    fill="rgba(2, 132, 199, 0.06)"
+                    stroke="#0284C7"
+                    stroke-width="2"
+                    stroke-dasharray="5 3"
+                  />
+                  <!-- Body wireframe -->
+                  <rect
+                    x="95"
+                    y="72"
+                    width="110"
+                    height="68"
+                    fill="rgba(255, 255, 255, 0.7)"
+                    stroke="#0284C7"
+                    stroke-width="2"
+                  />
+                  <!-- Door wireframe -->
+                  <rect
+                    x="136"
+                    y="102"
+                    width="28"
+                    height="38"
+                    fill="none"
+                    stroke="#0284C7"
+                    stroke-width="1.5"
+                    stroke-dasharray="3 2"
+                  />
+                  <!-- Window wireframes -->
+                  <rect x="108" y="84" width="18" height="18" fill="none" stroke="#0284C7" stroke-width="1.5" />
+                  <rect x="174" y="84" width="18" height="18" fill="none" stroke="#0284C7" stroke-width="1.5" />
+                  <!-- Annotations -->
+                  <text x="222" y="96" fill="#0369A1" font-size="11" font-family="JetBrains Mono, monospace">
+                    self.color
+                  </text>
+                  <text x="222" y="116" fill="#0369A1" font-size="11" font-family="JetBrains Mono, monospace">
+                    self.floors
+                  </text>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Interactive Instantiation Controls -->
+            <div class="mt-6 border-t border-slate-100 pt-5">
+              <div class="text-xs font-semibold text-slate-700 mb-3">設定新物件的初始參數 (__init__)</div>
+
+              <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <span class="block text-xs text-slate-500 mb-1.5">牆壁顏色 (color)</span>
+                  <div class="flex items-center gap-2" role="group" aria-label="選擇牆壁顏色">
+                    <button
+                      type="button"
+                      data-color="sky"
+                      class="color-opt min-h-[40px] flex-1 rounded-lg border border-sky-600 bg-sky-50 px-2.5 py-1.5 text-xs font-semibold text-sky-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 whitespace-nowrap"
+                    >
+                      海藍
+                    </button>
+                    <button
+                      type="button"
+                      data-color="amber"
+                      class="color-opt min-h-[40px] flex-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 whitespace-nowrap"
+                    >
+                      暖磚
+                    </button>
+                    <button
+                      type="button"
+                      data-color="emerald"
+                      class="color-opt min-h-[40px] flex-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 whitespace-nowrap"
+                    >
+                      青苔
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <span class="block text-xs text-slate-500 mb-1.5">樓層數 (floors)</span>
+                  <div class="flex items-center gap-2" role="group" aria-label="選擇樓層數">
+                    <button
+                      type="button"
+                      data-floors="1"
+                      class="floor-opt min-h-[40px] flex-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 tabular-nums whitespace-nowrap"
+                    >
+                      1 層
+                    </button>
+                    <button
+                      type="button"
+                      data-floors="2"
+                      class="floor-opt min-h-[40px] flex-1 rounded-lg border border-sky-600 bg-sky-50 px-2.5 py-1.5 text-xs font-semibold text-sky-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 tabular-nums whitespace-nowrap"
+                    >
+                      2 層
+                    </button>
+                    <button
+                      type="button"
+                      data-floors="3"
+                      class="floor-opt min-h-[40px] flex-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 tabular-nums whitespace-nowrap"
+                    >
+                      3 層
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-4 flex items-center gap-3">
+                <button
+                  id="build-house-btn"
+                  type="button"
+                  class="min-h-[44px] flex-1 rounded-lg bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors duration-150 hover:bg-sky-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 focus-visible:ring-offset-2 whitespace-nowrap"
+                >
+                  依藍圖蓋出新房子 (建立物件)
+                </button>
+                <button
+                  id="reset-houses-btn"
+                  type="button"
+                  class="min-h-[44px] rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition-colors duration-150 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 whitespace-nowrap"
+                >
+                  重設
+                </button>
+              </div>
+              <p id="builder-hint" class="mt-2.5 font-mono text-xs text-slate-500">
+                即將執行：House(color="海藍", floors=2)
+              </p>
+            </div>
+          </div>
+
+          <!-- Right: Instances (Objects) -->
+          <div class="lg:col-span-7 flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-6">
+            <div>
+              <div class="flex items-center justify-between gap-4">
+                <div>
+                  <span class="text-xs font-semibold text-amber-700">Object 物件（實例）</span>
+                  <h3 class="mt-0.5 text-lg font-bold text-slate-900">蓋出來的實體房子們</h3>
+                </div>
+                <span id="instance-counter" class="font-mono text-xs font-medium text-slate-500 tabular-nums">
+                  目前已建立 2 / 3 棟
+                </span>
+              </div>
+
+              <p class="mt-3 text-sm leading-relaxed text-slate-600">
+                每一棟房子都是根據同一張 <code class="font-mono text-xs text-slate-800">House</code> 藍圖建出的獨立個體。試著點擊單一房子的「開門 / 關門」或「換漆顏色」，看看其他房子會不會受到影響。
+              </p>
+
+              <!-- Houses Grid -->
+              <div id="houses-container" class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <!-- Populated dynamically via JS -->
+              </div>
+            </div>
+
+            <!-- Live Summary Strip -->
+            <div class="mt-6 border-t border-slate-100 pt-4 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between text-xs text-slate-500">
+              <span>關鍵體會：Class 只有一份，Object 可以有無限多個</span>
+              <span class="font-mono text-slate-600">獨立記憶體 · 互不干擾</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 2: 程式碼範例 -->
+      <section id="code" class="py-12 sm:py-16 border-b border-slate-200 scroll-mt-20">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p class="text-xs font-semibold text-sky-700">02. 程式碼範例</p>
+            <h2 class="mt-1 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+              認識 <code class="font-mono text-sky-700">__init__</code> 與 <code class="font-mono text-sky-700">self</code>
+            </h2>
+          </div>
+
+          <!-- Interactive Focus Filter -->
+          <div
+            class="inline-flex items-center gap-1 rounded-lg bg-slate-200/70 p-1 self-start sm:self-auto"
+            role="tablist"
+            aria-label="程式碼重點切換"
+          >
+            <button
+              type="button"
+              data-focus="all"
+              class="focus-tab min-h-[36px] rounded-md bg-white px-3 py-1.5 text-xs font-semibold text-slate-900 shadow-sm transition-colors whitespace-nowrap"
+            >
+              完整程式
+            </button>
+            <button
+              type="button"
+              data-focus="init"
+              class="focus-tab min-h-[36px] rounded-md px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:text-slate-900 whitespace-nowrap"
+            >
+              __init__
+            </button>
+            <button
+              type="button"
+              data-focus="self"
+              class="focus-tab min-h-[36px] rounded-md px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:text-slate-900 whitespace-nowrap"
+            >
+              self
+            </button>
+            <button
+              type="button"
+              data-focus="instance"
+              class="focus-tab min-h-[36px] rounded-md px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:text-slate-900 whitespace-nowrap"
+            >
+              建立物件
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-start">
+          <!-- Code Panel -->
+          <div class="lg:col-span-7 overflow-hidden rounded-xl border border-slate-800 bg-slate-900 text-slate-100">
+            <div class="flex items-center justify-between border-b border-slate-800 px-4 py-3">
+              <span class="font-mono text-xs text-slate-400">house_blueprint.py</span>
+              <button
+                id="copy-code-btn"
+                type="button"
+                class="inline-flex min-h-[36px] items-center gap-1.5 rounded-md border border-slate-700 bg-slate-800 px-3 py-1 text-xs font-medium text-slate-200 transition-colors hover:bg-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 whitespace-nowrap"
+              >
+                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span>複製程式碼</span>
+              </button>
+            </div>
+
+            <div class="overflow-x-auto py-4 font-mono text-xs sm:text-[13px] leading-6">
+              <pre id="python-code-block" class="min-w-[540px]"><code class="block"
+><span class="code-line block px-4" data-tags="all"><span class="inline-block w-7 select-none text-slate-500 tabular-nums">1</span><span class="text-slate-400"># 1. 定義類別 (設計藍圖)：類別名稱習慣用大寫開頭</span></span>
+<span class="code-line block px-4" data-tags="all"><span class="inline-block w-7 select-none text-slate-500 tabular-nums">2</span><span class="text-sky-400">class</span> <span class="text-amber-300">House</span>:</span>
+<span class="code-line block px-4" data-tags="all init"><span class="inline-block w-7 select-none text-slate-500 tabular-nums">3</span>    <span class="text-slate-400"># __init__ 是建構子：每當「蓋新房子」時會自動執行</span></span>
+<span class="code-line block px-4" data-tags="all init self"><span class="inline-block w-7 select-none text-slate-500 tabular-nums">4</span>    <span class="text-sky-400">def</span> <span class="text-emerald-300">__init__</span>(<span class="text-amber-300">self</span>, color, floors):</span>
+<span class="code-line block px-4" data-tags="all init self"><span class="inline-block w-7 select-none text-slate-500 tabular-nums">5</span>        <span class="text-slate-400"># self 代表「正在被建立的那一棟房子自己」</span></span>
+<span class="code-line block px-4" data-tags="all init self"><span class="inline-block w-7 select-none text-slate-500 tabular-nums">6</span>        <span class="text-amber-300">self</span>.color = color      <span class="text-slate-400"># 設定這棟房子的牆壁顏色</span></span>
+<span class="code-line block px-4" data-tags="all init self"><span class="inline-block w-7 select-none text-slate-500 tabular-nums">7</span>        <span class="text-amber-300">self</span>.floors = floors    <span class="text-slate-400"># 設定這棟房子的樓層數</span></span>
+<span class="code-line block px-4" data-tags="all"><span class="inline-block w-7 select-none text-slate-500 tabular-nums">8</span></span>
+<span class="code-line block px-4" data-tags="all self"><span class="inline-block w-7 select-none text-slate-500 tabular-nums">9</span>    <span class="text-slate-400"># 定義方法 (房子能做的動作)，第一個參數一樣要寫 self</span></span>
+<span class="code-line block px-4" data-tags="all self"><span class="inline-block w-7 select-none text-slate-500 tabular-nums">10</span>    <span class="text-sky-400">def</span> <span class="text-emerald-300">introduce</span>(<span class="text-amber-300">self</span>):</span>
+<span class="code-line block px-4" data-tags="all self"><span class="inline-block w-7 select-none text-slate-500 tabular-nums">11</span>        <span class="text-sky-400">print</span>(<span class="text-emerald-200">f"這是一棟 </span>{<span class="text-amber-300">self</span>.color}<span class="text-emerald-200">、共 </span>{<span class="text-amber-300">self</span>.floors}<span class="text-emerald-200"> 層的房子。"</span>)</span>
+<span class="code-line block px-4" data-tags="all"><span class="inline-block w-7 select-none text-slate-500 tabular-nums">12</span></span>
+<span class="code-line block px-4" data-tags="all instance"><span class="inline-block w-7 select-none text-slate-500 tabular-nums">13</span><span class="text-slate-400"># 2. 依藍圖建立物件 (實體化)：產生兩棟互不干擾的房子</span></span>
+<span class="code-line block px-4" data-tags="all instance"><span class="inline-block w-7 select-none text-slate-500 tabular-nums">14</span>my_house = <span class="text-amber-300">House</span>(<span class="text-emerald-200">"海藍色"</span>, <span class="text-sky-300">2</span>)</span>
+<span class="code-line block px-4" data-tags="all instance"><span class="inline-block w-7 select-none text-slate-500 tabular-nums">15</span>friend_house = <span class="text-amber-300">House</span>(<span class="text-emerald-200">"暖磚紅"</span>, <span class="text-sky-300">3</span>)</span>
+<span class="code-line block px-4" data-tags="all instance"><span class="inline-block w-7 select-none text-slate-500 tabular-nums">16</span></span>
+<span class="code-line block px-4" data-tags="all instance self"><span class="inline-block w-7 select-none text-slate-500 tabular-nums">17</span><span class="text-slate-400"># 3. 呼叫方法：Python 會自動把 my_house 傳給 self</span></span>
+<span class="code-line block px-4" data-tags="all instance self"><span class="inline-block w-7 select-none text-slate-500 tabular-nums">18</span>my_house.introduce()      <span class="text-slate-400"># 輸出：這是一棟 海藍色、共 2 層的房子。</span></span>
+<span class="code-line block px-4" data-tags="all instance self"><span class="inline-block w-7 select-none text-slate-500 tabular-nums">19</span>friend_house.introduce()  <span class="text-slate-400"># 輸出：這是一棟 暖磚紅、共 3 層的房子。</span></span></code></pre>
+            </div>
+          </div>
+
+          <!-- Concept Breakdown Panel -->
+          <div class="lg:col-span-5 space-y-4">
+            <div
+              id="explain-init"
+              class="explain-card rounded-xl border border-slate-200 bg-white p-5 transition-colors duration-150"
+            >
+              <div class="flex items-center justify-between">
+                <h3 class="font-mono text-sm font-bold text-slate-900">__init__(self, ...)</h3>
+                <span class="text-xs font-medium text-sky-700">初始化方法</span>
+              </div>
+              <p class="mt-2 text-sm leading-relaxed text-slate-600">
+                名稱前後各有兩條底線，負責在物件剛誕生時「裝潢基本配備」。呼叫 <code class="font-mono text-xs text-slate-800">House("海藍色", 2)</code> 的瞬間，Python 就會自動執行它。
+              </p>
+            </div>
+
+            <div
+              id="explain-self"
+              class="explain-card rounded-xl border border-slate-200 bg-white p-5 transition-colors duration-150"
+            >
+              <div class="flex items-center justify-between">
+                <h3 class="font-mono text-sm font-bold text-slate-900">self 參數</h3>
+                <span class="text-xs font-medium text-sky-700">指向「這一個物件」</span>
+              </div>
+              <p class="mt-2 text-sm leading-relaxed text-slate-600">
+                因為同一個類別可以造出很多房子，方法需要知道「現在是誰在呼叫我」。當執行 <code class="font-mono text-xs text-slate-800">my_house.introduce()</code> 時，<code class="font-mono text-xs text-slate-800">self</code> 就代表 <code class="font-mono text-xs text-slate-800">my_house</code> 本身。
+              </p>
+            </div>
+
+            <div
+              id="explain-instance"
+              class="explain-card rounded-xl border border-slate-200 bg-white p-5 transition-colors duration-150"
+            >
+              <div class="flex items-center justify-between">
+                <h3 class="font-mono text-sm font-bold text-slate-900">my_house = House(...)</h3>
+                <span class="text-xs font-medium text-sky-700">實體化（Instantiation）</span>
+              </div>
+              <p class="mt-2 text-sm leading-relaxed text-slate-600">
+                不需要自己傳入 <code class="font-mono text-xs text-slate-800">self</code>，只要把 <code class="font-mono text-xs text-slate-800">color</code> 與 <code class="font-mono text-xs text-slate-800">floors</code> 放進括號裡，就能產出真正佔有記憶體空間的物件。
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: AI 助教提問區 -->
+      <section id="ai-tutor" class="py-12 sm:py-16 border-b border-slate-200 scroll-mt-20">
+        <div class="max-w-2xl">
+          <p class="text-xs font-semibold text-sky-700">03. AI 助教提問區</p>
+          <h2 class="mt-1 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+            把好奇的問題帶去問 AI 助教
+          </h2>
+          <p class="mt-3 text-sm leading-relaxed text-slate-600 sm:text-base">
+            想確認自己是不是真的懂了？點擊下方按鈕一鍵複製引導式提問，貼到你常用的 AI 對話視窗，讓 AI 舉更多生活例子陪你練習。
+          </p>
+        </div>
+
+        <div class="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
+          <!-- Prompt Card 1 -->
+          <article class="flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-6">
+            <div>
+              <div class="flex items-center justify-between gap-2 text-xs text-slate-500">
+                <span class="font-semibold text-slate-700">引導問題 1</span>
+                <span>理解 self 與參數傳遞</span>
+              </div>
+              <h3 class="mt-2 text-lg font-bold text-slate-900">為什麼每個方法都要寫 self？</h3>
+              <p class="mt-3 rounded-lg bg-slate-50 p-4 text-sm leading-relaxed text-slate-700 border border-slate-200/70">
+                「我正在學 Python 的 Class 與 Object，看到 def __init__(self, color) 時很困惑：為什麼定義時要寫 self，但呼叫 House("藍色") 時卻不用傳入 self？請用『設計藍圖與房子』以外的生活例子，再解釋一次給我聽。」
+              </p>
+            </div>
+
+            <div class="mt-5 flex items-center justify-between gap-3">
+              <button
+                type="button"
+                class="copy-prompt-btn inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors duration-150 hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 focus-visible:ring-offset-2 whitespace-nowrap"
+                data-prompt='我正在學 Python 的 Class 與 Object，看到 def __init__(self, color) 時很困惑：為什麼定義時要寫 self，但呼叫 House("藍色") 時卻不用傳入 self？請用『設計藍圖與房子』以外的生活例子，再解釋一次給我聽。'
+              >
+                <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span class="btn-label">一鍵複製提問 1</span>
+              </button>
+            </div>
+          </article>
+
+          <!-- Prompt Card 2 -->
+          <article class="flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-6">
+            <div>
+              <div class="flex items-center justify-between gap-2 text-xs text-slate-500">
+                <span class="font-semibold text-slate-700">引導問題 2</span>
+                <span>實作練習與除錯</span>
+              </div>
+              <h3 class="mt-2 text-lg font-bold text-slate-900">請幫我出題練習寫一個類別</h3>
+              <p class="mt-3 rounded-lg bg-slate-50 p-4 text-sm leading-relaxed text-slate-700 border border-slate-200/70">
+                「我剛學會用 Python 寫一個包含 __init__ 與 self 的 House 類別。請幫我設計一個簡單的『咖啡飲料訂單 (Coffee)』小練習題目（包含 2 個屬性與 1 個方法），先不要直接給我解答，等我寫完貼給你批改！」
+              </p>
+            </div>
+
+            <div class="mt-5 flex items-center justify-between gap-3">
+              <button
+                type="button"
+                class="copy-prompt-btn inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors duration-150 hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 focus-visible:ring-offset-2 whitespace-nowrap"
+                data-prompt="我剛學會用 Python 寫一個包含 __init__ 與 self 的 House 類別。請幫我設計一個簡單的『咖啡飲料訂單 (Coffee)』小練習題目（包含 2 個屬性與 1 個方法），先不要直接給我解答，等我寫完貼給你批改！"
+              >
+                <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span class="btn-label">一鍵複製提問 2</span>
+              </button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Section 4: 隨堂小測驗 -->
+      <section id="quiz" class="py-12 sm:py-16 scroll-mt-20">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p class="text-xs font-semibold text-sky-700">04. 隨堂小測驗</p>
+            <h2 class="mt-1 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+              即時檢測你的觀念是否清晰
+            </h2>
+          </div>
+
+          <div class="flex items-center gap-4">
+            <span id="quiz-score" class="font-mono text-sm font-semibold text-slate-700 tabular-nums">
+              已作答 0 / 2 題 · 得分 0
+            </span>
+            <button
+              id="reset-quiz-btn"
+              type="button"
+              class="min-h-[40px] rounded-lg border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-700 transition-colors hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 whitespace-nowrap"
+            >
+              重新作答
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <!-- Question 1 -->
+          <div
+            class="quiz-card flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-6"
+            data-question="1"
+            data-answer="B"
+          >
+            <div>
+              <div class="flex items-center justify-between text-xs text-slate-500">
+                <span class="font-semibold text-slate-700">第 1 題</span>
+                <span>觀念對照</span>
+              </div>
+              <h3 class="mt-2 text-lg font-bold leading-snug text-slate-900">
+                執行 <code class="font-mono text-base text-sky-700">h1 = House("海藍", 2)</code> 與
+                <code class="font-mono text-base text-sky-700">h2 = House("暖磚", 3)</code> 後，若將
+                <code class="font-mono text-base text-sky-700">h1.color</code> 改成 <code class="font-mono text-base">"純白"</code>，會發生什麼事？
+              </h3>
+
+              <div class="mt-5 space-y-2.5" role="radiogroup" aria-label="第 1 題選項">
+                <button
+                  type="button"
+                  data-option="A"
+                  class="quiz-option flex min-h-[44px] w-full items-center gap-3 rounded-lg border border-slate-200 bg-white px-4 py-3 text-left text-sm text-slate-800 transition-colors duration-150 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600"
+                >
+                  <span class="font-mono text-xs font-bold text-slate-500">A.</span>
+                  <span>h2 的顏色與 House 藍圖都會一起變成「純白」</span>
+                </button>
+                <button
+                  type="button"
+                  data-option="B"
+                  class="quiz-option flex min-h-[44px] w-full items-center gap-3 rounded-lg border border-slate-200 bg-white px-4 py-3 text-left text-sm text-slate-800 transition-colors duration-150 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600"
+                >
+                  <span class="font-mono text-xs font-bold text-slate-500">B.</span>
+                  <span>只有 h1 變成「純白」，h2 依然維持「暖磚」</span>
+                </button>
+                <button
+                  type="button"
+                  data-option="C"
+                  class="quiz-option flex min-h-[44px] w-full items-center gap-3 rounded-lg border border-slate-200 bg-white px-4 py-3 text-left text-sm text-slate-800 transition-colors duration-150 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600"
+                >
+                  <span class="font-mono text-xs font-bold text-slate-500">C.</span>
+                  <span>程式會報錯，因為顏色只能在 __init__ 裡設定一次</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="quiz-feedback mt-5 hidden rounded-lg border p-4 text-sm leading-relaxed" aria-live="polite"></div>
+          </div>
+
+          <!-- Question 2 -->
+          <div
+            class="quiz-card flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-6"
+            data-question="2"
+            data-answer="C"
+          >
+            <div>
+              <div class="flex items-center justify-between text-xs text-slate-500">
+                <span class="font-semibold text-slate-700">第 2 題</span>
+                <span>語法運作</span>
+              </div>
+              <h3 class="mt-2 text-lg font-bold leading-snug text-slate-900">
+                在類別的 <code class="font-mono text-base text-sky-700">def __init__(self, color, floors):</code> 中，關於 <code class="font-mono text-base text-sky-700">self</code> 的敘述何者正確？
+              </h3>
+
+              <div class="mt-5 space-y-2.5" role="radiogroup" aria-label="第 2 題選項">
+                <button
+                  type="button"
+                  data-option="A"
+                  class="quiz-option flex min-h-[44px] w-full items-center gap-3 rounded-lg border border-slate-200 bg-white px-4 py-3 text-left text-sm text-slate-800 transition-colors duration-150 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600"
+                >
+                  <span class="font-mono text-xs font-bold text-slate-500">A.</span>
+                  <span>代表整個 Python 程式檔，所有類別共用同一個 self</span>
+                </button>
+                <button
+                  type="button"
+                  data-option="B"
+                  class="quiz-option flex min-h-[44px] w-full items-center gap-3 rounded-lg border border-slate-200 bg-white px-4 py-3 text-left text-sm text-slate-800 transition-colors duration-150 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600"
+                >
+                  <span class="font-mono text-xs font-bold text-slate-500">B.</span>
+                  <span>呼叫 House(self, "海藍", 2) 時必須手動把 self 傳進去</span>
+                </button>
+                <button
+                  type="button"
+                  data-option="C"
+                  class="quiz-option flex min-h-[44px] w-full items-center gap-3 rounded-lg border border-slate-200 bg-white px-4 py-3 text-left text-sm text-slate-800 transition-colors duration-150 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600"
+                >
+                  <span class="font-mono text-xs font-bold text-slate-500">C.</span>
+                  <span>代表目前正在建立或操作的那一個物件實例，Python 會自動傳入</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="quiz-feedback mt-5 hidden rounded-lg border p-4 text-sm leading-relaxed" aria-live="polite"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="border-t border-slate-200 bg-white">
+      <div class="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-6 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+        <span>Python OOP 教室 · 類別與物件入門單元</span>
+        <a href="#top" class="font-medium text-slate-600 hover:text-slate-900 transition-colors">
+          回到頂端
+        </a>
+      </div>
+    </footer>
+
+    <script>
+      (function () {
+        // ==========================================
+        // 1. 互動觀念圖解：設計藍圖 vs 實體房子
+        // ==========================================
+        const COLOR_MAP = {
+          sky: { label: '海藍', wall: '#BAE6FD', roof: '#0284C7', stroke: '#0369A1', text: 'text-sky-800' },
+          amber: { label: '暖磚', wall: '#FDE68A', roof: '#D97706', stroke: '#B45309', text: 'text-amber-800' },
+          emerald: { label: '青苔', wall: '#A7F3D0', roof: '#059669', stroke: '#047857', text: 'text-emerald-800' },
+        };
+
+        const COLOR_ORDER = ['sky', 'amber', 'emerald'];
+
+        let selectedColor = 'sky';
+        let selectedFloors = 2;
+        let houses = [
+          { id: 1, varName: 'my_house', color: 'sky', floors: 2, doorOpen: false },
+          { id: 2, varName: 'friend_house', color: 'amber', floors: 3, doorOpen: true },
+        ];
+
+        const housesContainer = document.getElementById('houses-container');
+        const instanceCounter = document.getElementById('instance-counter');
+        const builderHint = document.getElementById('builder-hint');
+        const buildHouseBtn = document.getElementById('build-house-btn');
+        const resetHousesBtn = document.getElementById('reset-houses-btn');
+
+        function updateBuilderHint() {
+          builderHint.textContent = `即將執行：House(color="${COLOR_MAP[selectedColor].label}", floors=${selectedFloors})`;
+        }
+
+        function createHouseSvg(house) {
+          const palette = COLOR_MAP[house.color];
+          const floorHeight = 22;
+          const baseBottom = 112;
+          const totalWallHeight = house.floors * floorHeight + 12;
+          const wallTop = baseBottom - totalWallHeight;
+          const roofPeak = wallTop - 26;
+
+          let windowsSvg = '';
+          for (let f = 0; f < house.floors; f++) {
+            const wy = baseBottom - (f + 1) * floorHeight - 4;
+            if (f === 0) {
+              windowsSvg += `<rect x="40" y="${wy}" width="12" height="12" rx="1.5" fill="#FFFFFF" stroke="${palette.stroke}" stroke-width="1.2" />`;
+              windowsSvg += `<rect x="88" y="${wy}" width="12" height="12" rx="1.5" fill="#FFFFFF" stroke="${palette.stroke}" stroke-width="1.2" />`;
+            } else {
+              windowsSvg += `<rect x="44" y="${wy}" width="14" height="12" rx="1.5" fill="#FFFFFF" stroke="${palette.stroke}" stroke-width="1.2" />`;
+              windowsSvg += `<rect x="82" y="${wy}" width="14" height="12" rx="1.5" fill="#FFFFFF" stroke="${palette.stroke}" stroke-width="1.2" />`;
+            }
+          }
+
+          const doorFill = house.doorOpen ? '#1E293B' : '#FFFFFF';
+          const doorInner = house.doorOpen
+            ? `<polygon points="61,88 73,92 73,112 61,112" fill="#FDE047" opacity="0.85" />`
+            : `<circle cx="75" cy="101" r="1.5" fill="${palette.stroke}" />`;
+
+          return `
+            <svg viewBox="0 0 140 124" class="w-full h-28" role="img" aria-label="${house.varName} 實體房子圖示">
+              <line x1="16" y1="112" x2="124" y2="112" stroke="#CBD5E1" stroke-width="2" stroke-linecap="round" />
+              <polygon points="70,${roofPeak} 26,${wallTop} 114,${wallTop}" fill="${palette.roof}" stroke="${palette.stroke}" stroke-width="1.5" stroke-linejoin="round" />
+              <rect x="32" y="${wallTop}" width="76" height="${totalWallHeight}" fill="${palette.wall}" stroke="${palette.stroke}" stroke-width="1.5" />
+              ${windowsSvg}
+              <rect x="61" y="88" width="18" height="24" fill="${doorFill}" stroke="${palette.stroke}" stroke-width="1.5" />
+              ${doorInner}
+            </svg>
+          `;
+        }
+
+        function renderHouses() {
+          instanceCounter.textContent = `目前已建立 ${houses.length} / 3 棟`;
+          buildHouseBtn.disabled = houses.length >= 3;
+          buildHouseBtn.classList.toggle('opacity-50', houses.length >= 3);
+          buildHouseBtn.classList.toggle('cursor-not-allowed', houses.length >= 3);
+          buildHouseBtn.textContent =
+            houses.length >= 3 ? '已達示範上限 (3 棟)' : '依藍圖蓋出新房子 (建立物件)';
+
+          housesContainer.innerHTML = houses
+            .map((house) => {
+              const palette = COLOR_MAP[house.color];
+              return `
+                <div class="flex flex-col justify-between rounded-lg border border-slate-200 bg-slate-50/70 p-4">
+                  <div>
+                    <div class="flex items-center justify-between gap-2">
+                      <span class="font-mono text-xs font-bold text-slate-900 truncate">${house.varName}</span>
+                      <span class="font-mono text-[11px] text-slate-500 tabular-nums">#0${house.id}</span>
+                    </div>
+                    <div class="mt-2 rounded-md bg-white border border-slate-200/80 p-2">
+                      ${createHouseSvg(house)}
+                    </div>
+                    <dl class="mt-3 space-y-1 font-mono text-xs text-slate-600">
+                      <div class="flex justify-between">
+                        <dt>color:</dt>
+                        <dd class="font-semibold ${palette.text}">${palette.label}</dd>
+                      </div>
+                      <div class="flex justify-between">
+                        <dt>floors:</dt>
+                        <dd class="font-semibold text-slate-900 tabular-nums">${house.floors} 層</dd>
+                      </div>
+                      <div class="flex justify-between">
+                        <dt>door:</dt>
+                        <dd class="font-semibold text-slate-900">${house.doorOpen ? '開啟中' : '已關閉'}</dd>
+                      </div>
+                    </dl>
+                  </div>
+
+                  <div class="mt-4 grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      data-action="toggle-door"
+                      data-id="${house.id}"
+                      class="min-h-[38px] rounded-md border border-slate-200 bg-white px-2 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 whitespace-nowrap"
+                    >
+                      ${house.doorOpen ? '關門' : '開門'}
+                    </button>
+                    <button
+                      type="button"
+                      data-action="cycle-color"
+                      data-id="${house.id}"
+                      class="min-h-[38px] rounded-md border border-slate-200 bg-white px-2 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 whitespace-nowrap"
+                    >
+                      換漆顏色
+                    </button>
+                  </div>
+                </div>
+              `;
+            })
+            .join('');
+        }
+
+        document.querySelectorAll('.color-opt').forEach((btn) => {
+          btn.addEventListener('click', function () {
+            selectedColor = this.dataset.color;
+            document.querySelectorAll('.color-opt').forEach((b) => {
+              const active = b.dataset.color === selectedColor;
+              b.className = active
+                ? 'color-opt min-h-[40px] flex-1 rounded-lg border border-sky-600 bg-sky-50 px-2.5 py-1.5 text-xs font-semibold text-sky-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 whitespace-nowrap'
+                : 'color-opt min-h-[40px] flex-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 whitespace-nowrap';
+            });
+            updateBuilderHint();
+          });
+        });
+
+        document.querySelectorAll('.floor-opt').forEach((btn) => {
+          btn.addEventListener('click', function () {
+            selectedFloors = Number(this.dataset.floors);
+            document.querySelectorAll('.floor-opt').forEach((b) => {
+              const active = Number(b.dataset.floors) === selectedFloors;
+              b.className = active
+                ? 'floor-opt min-h-[40px] flex-1 rounded-lg border border-sky-600 bg-sky-50 px-2.5 py-1.5 text-xs font-semibold text-sky-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 tabular-nums whitespace-nowrap'
+                : 'floor-opt min-h-[40px] flex-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 tabular-nums whitespace-nowrap';
+            });
+            updateBuilderHint();
+          });
+        });
+
+        buildHouseBtn.addEventListener('click', function () {
+          if (houses.length >= 3) return;
+          const nextId = houses.length + 1;
+          const varNames = ['my_house', 'friend_house', 'third_house'];
+          houses.push({
+            id: nextId,
+            varName: varNames[nextId - 1] || `house_${nextId}`,
+            color: selectedColor,
+            floors: selectedFloors,
+            doorOpen: false,
+          });
+          renderHouses();
+        });
+
+        resetHousesBtn.addEventListener('click', function () {
+          houses = [
+            { id: 1, varName: 'my_house', color: 'sky', floors: 2, doorOpen: false },
+            { id: 2, varName: 'friend_house', color: 'amber', floors: 3, doorOpen: true },
+          ];
+          renderHouses();
+        });
+
+        housesContainer.addEventListener('click', function (e) {
+          const btn = e.target.closest('button[data-action]');
+          if (!btn) return;
+          const id = Number(btn.dataset.id);
+          const target = houses.find((h) => h.id === id);
+          if (!target) return;
+
+          if (btn.dataset.action === 'toggle-door') {
+            target.doorOpen = !target.doorOpen;
+          } else if (btn.dataset.action === 'cycle-color') {
+            const idx = COLOR_ORDER.indexOf(target.color);
+            target.color = COLOR_ORDER[(idx + 1) % COLOR_ORDER.length];
+          }
+          renderHouses();
+        });
+
+        renderHouses();
+        updateBuilderHint();
+
+        // ==========================================
+        // 2. 程式碼範例重點切換 & 複製
+        // ==========================================
+        const focusTabs = document.querySelectorAll('.focus-tab');
+        const codeLines = document.querySelectorAll('#python-code-block .code-line');
+        const explainCards = {
+          init: document.getElementById('explain-init'),
+          self: document.getElementById('explain-self'),
+          instance: document.getElementById('explain-instance'),
+        };
+
+        focusTabs.forEach((tab) => {
+          tab.addEventListener('click', function () {
+            const focus = this.dataset.focus;
+
+            focusTabs.forEach((t) => {
+              const active = t.dataset.focus === focus;
+              t.className = active
+                ? 'focus-tab min-h-[36px] rounded-md bg-white px-3 py-1.5 text-xs font-semibold text-slate-900 shadow-sm transition-colors whitespace-nowrap'
+                : 'focus-tab min-h-[36px] rounded-md px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:text-slate-900 whitespace-nowrap';
+            });
+
+            codeLines.forEach((line) => {
+              const tags = (line.dataset.tags || '').split(' ');
+              if (focus === 'all') {
+                line.classList.remove('code-line-dim', 'code-line-active');
+              } else if (tags.includes(focus)) {
+                line.classList.remove('code-line-dim');
+                line.classList.add('code-line-active');
+              } else {
+                line.classList.remove('code-line-active');
+                line.classList.add('code-line-dim');
+              }
+            });
+
+            Object.keys(explainCards).forEach((key) => {
+              const card = explainCards[key];
+              if (focus === 'all') {
+                card.classList.remove('border-sky-500', 'bg-sky-50/40', 'opacity-60');
+                card.classList.add('border-slate-200', 'bg-white');
+              } else if (key === focus) {
+                card.classList.remove('border-slate-200', 'bg-white', 'opacity-60');
+                card.classList.add('border-sky-500', 'bg-sky-50/40');
+              } else {
+                card.classList.remove('border-sky-500', 'bg-sky-50/40');
+                card.classList.add('border-slate-200', 'bg-white', 'opacity-60');
+              }
+            });
+          });
+        });
+
+        async function copyText(text) {
+          if (navigator.clipboard && window.isSecureContext) {
+            try {
+              await navigator.clipboard.writeText(text);
+              return true;
+            } catch (_) {
+              // fallback below
+            }
+          }
+          const textarea = document.createElement('textarea');
+          textarea.value = text;
+          textarea.style.position = 'fixed';
+          textarea.style.opacity = '0';
+          document.body.appendChild(textarea);
+          textarea.focus();
+          textarea.select();
+          let ok = false;
+          try {
+            ok = document.execCommand('copy');
+          } catch (_) {
+            ok = false;
+          }
+          document.body.removeChild(textarea);
+          return ok;
+        }
+
+        const copyCodeBtn = document.getElementById('copy-code-btn');
+        const RAW_PYTHON_CODE = `# 1. 定義類別 (設計藍圖)：類別名稱習慣用大寫開頭
+class House:
+    # __init__ 是建構子：每當「蓋新房子」時會自動執行
+    def __init__(self, color, floors):
+        # self 代表「正在被建立的那一棟房子自己」
+        self.color = color      # 設定這棟房子的牆壁顏色
+        self.floors = floors    # 設定這棟房子的樓層數
+
+    # 定義方法 (房子能做的動作)，第一個參數一樣要寫 self
+    def introduce(self):
+        print(f"這是一棟 {self.color}、共 {self.floors} 層的房子。")
+
+# 2. 依藍圖建立物件 (實體化)：產生兩棟互不干擾的房子
+my_house = House("海藍色", 2)
+friend_house = House("暖磚紅", 3)
+
+# 3. 呼叫方法：Python 會自動把 my_house 傳給 self
+my_house.introduce()      # 輸出：這是一棟 海藍色、共 2 層的房子。
+friend_house.introduce()  # 輸出：這是一棟 暖磚紅、共 3 層的房子。`;
+
+        copyCodeBtn.addEventListener('click', async function () {
+          const ok = await copyText(RAW_PYTHON_CODE);
+          if (!ok) return;
+          const label = this.querySelector('span');
+          label.textContent = '已複製程式碼';
+          setTimeout(() => {
+            label.textContent = '複製程式碼';
+          }, 2200);
+        });
+
+        // ==========================================
+        // 3. AI 助教一鍵複製提問
+        // ==========================================
+        document.querySelectorAll('.copy-prompt-btn').forEach((btn) => {
+          const defaultLabel = btn.querySelector('.btn-label').textContent;
+          btn.addEventListener('click', async function () {
+            const promptText = this.dataset.prompt;
+            const ok = await copyText(promptText);
+            if (!ok) return;
+
+            const labelEl = this.querySelector('.btn-label');
+            labelEl.textContent = '已複製提問！可貼給 AI 助教';
+            this.classList.remove('bg-slate-900', 'hover:bg-slate-800');
+            this.classList.add('bg-emerald-600', 'hover:bg-emerald-700');
+
+            setTimeout(() => {
+              labelEl.textContent = defaultLabel;
+              this.classList.remove('bg-emerald-600', 'hover:bg-emerald-700');
+              this.classList.add('bg-slate-900', 'hover:bg-slate-800');
+            }, 2500);
+          });
+        });
+
+        // ==========================================
+        // 4. 隨堂小測驗互動邏輯
+        // ==========================================
+        const EXPLANATIONS = {
+          1: {
+            correct: '答對了！h1 與 h2 是根據同一份 House 藍圖蓋出的兩個獨立物件，各自擁有獨立的屬性空間，修改 h1.color 不會影響 h2，也不會改變藍圖本身。',
+            wrong: '再想一下：藍圖 (House) 只是規範結構，每次呼叫 House(...) 都會建立一個互不干擾的新物件 (h1 與 h2)，而且物件屬性建立後隨時可以修改。',
+          },
+          2: {
+            correct: '答對了！self 指的就是目前這個物件本身，用來區分「哪一棟房子」的顏色與樓層。呼叫 House("海藍", 2) 時，Python 會自動把新物件綁定到 self，不需手動傳入。',
+            wrong: '再想一下：self 並不是全部類別共用的，也不是需要手動傳入的參數；它代表「正在操作的單一物件實例」，由 Python 在背景自動傳遞。',
+          },
+        };
+
+        const quizState = { 1: null, 2: null };
+        const quizScoreEl = document.getElementById('quiz-score');
+        const resetQuizBtn = document.getElementById('reset-quiz-btn');
+
+        function updateScoreDisplay() {
+          const answeredCount = Object.values(quizState).filter((v) => v !== null).length;
+          const correctCount = Object.values(quizState).filter((v) => v === true).length;
+          quizScoreEl.textContent = `已作答 ${answeredCount} / 2 題 · 得分 ${correctCount}`;
+        }
+
+        document.querySelectorAll('.quiz-card').forEach((card) => {
+          const qId = Number(card.dataset.question);
+          const correctOpt = card.dataset.answer;
+          const options = card.querySelectorAll('.quiz-option');
+          const feedbackEl = card.querySelector('.quiz-feedback');
+
+          options.forEach((optBtn) => {
+            optBtn.addEventListener('click', function () {
+              const chosen = this.dataset.option;
+              const isCorrect = chosen === correctOpt;
+              quizState[qId] = isCorrect;
+
+              options.forEach((b) => {
+                b.disabled = true;
+                b.classList.remove(
+                  'hover:bg-slate-50',
+                  'border-slate-200',
+                  'border-emerald-600',
+                  'bg-emerald-50',
+                  'border-rose-600',
+                  'bg-rose-50'
+                );
+
+                if (b.dataset.option === correctOpt) {
+                  b.classList.add('border-emerald-600', 'bg-emerald-50', 'text-emerald-950', 'font-semibold');
+                } else if (b.dataset.option === chosen && !isCorrect) {
+                  b.classList.add('border-rose-600', 'bg-rose-50', 'text-rose-950');
+                } else {
+                  b.classList.add('border-slate-200', 'opacity-65');
+                }
+              });
+
+              feedbackEl.classList.remove('hidden', 'border-emerald-200', 'bg-emerald-50', 'text-emerald-900', 'border-rose-200', 'bg-rose-50', 'text-rose-900');
+
+              if (isCorrect) {
+                feedbackEl.classList.add('border-emerald-200', 'bg-emerald-50', 'text-emerald-900');
+                feedbackEl.innerHTML = `<div class="font-bold mb-1">✓ 正確答案 (${correctOpt})</div><p>${EXPLANATIONS[qId].correct}</p>`;
+              } else {
+                feedbackEl.classList.add('border-rose-200', 'bg-rose-50', 'text-rose-900');
+                feedbackEl.innerHTML = `<div class="font-bold mb-1">✕ 答案不正確 · 正解為 ${correctOpt}</div><p>${EXPLANATIONS[qId].wrong}</p>`;
+              }
+
+              updateScoreDisplay();
+            });
+          });
+        });
+
+        resetQuizBtn.addEventListener('click', function () {
+          quizState[1] = null;
+          quizState[2] = null;
+          updateScoreDisplay();
+
+          document.querySelectorAll('.quiz-card').forEach((card) => {
+            const feedbackEl = card.querySelector('.quiz-feedback');
+            feedbackEl.classList.add('hidden');
+            feedbackEl.innerHTML = '';
+
+            card.querySelectorAll('.quiz-option').forEach((b) => {
+              b.disabled = false;
+              b.className =
+                'quiz-option flex min-h-[44px] w-full items-center gap-3 rounded-lg border border-slate-200 bg-white px-4 py-3 text-left text-sm text-slate-800 transition-colors duration-150 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600';
+            });
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>
